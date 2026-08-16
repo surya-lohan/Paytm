@@ -2,6 +2,7 @@ import express from 'express';
 import zod from 'zod';
 import jwt from 'jsonwebtoken'
 import User from '../database/mongoDb/db.js';
+import authMiddleware from '../middlewares/user.js';
 const userRouter = express.Router();
 
 const signupBody = zod.object({
@@ -103,6 +104,9 @@ userRouter.post('/signin', async (req, res) => {
         })
     }
 
+
+
 })
+
 
 export default userRouter;

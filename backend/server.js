@@ -3,8 +3,9 @@ import cors from 'cors';
 import connectDB from './database/mongoDb/mongoose.js';
 import router from './routes/index.js';
 
-const app = express();
 connectDB();
+
+const app = express();
 app.use(cors());
 app.use(express.json());
 
