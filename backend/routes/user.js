@@ -11,6 +11,11 @@ const signupBody = zod.object({
     password: zod.string()
 })
 
+const signinBody = zod.object({
+    username: zod.email(),
+    password: zod.string()
+
+})
 
 userRouter.post('/signup', async (req, res) => {
 
@@ -47,8 +52,56 @@ userRouter.post('/signup', async (req, res) => {
 
     res.json({
         message: "User created successfully",
-        token: token
+        token: token,
+        userId: userId
     })
+
+})
+
+userRouter.post('/signin', async (req, res) => {
+
+    try {
+        const { success } = signinBody.safeParse(req.body);
+
+        if (!success) {
+            return res.status(411).json({
+                message: "Invalid inputs!"
+            })
+        }
+
+        const user = await User.findOne({
+            username: req.body.username,
+            password: req.body.password
+        })
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found!"
+            })
+        }
+
+        const userId = user._id;
+
+        const token = jwt.sign({
+            userId
+        }, process.env.JWT_SECRET || "thisissecret");
+
+        if (!token) {
+            return res.status(411).json({
+                message: "Something went wrong!"
+            })
+        }
+
+        return res.status(200).json({
+            message: "Sign in succesfull",
+            token: token
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error while signing up!",
+            error: error
+        })
+    }
 
 })
 
