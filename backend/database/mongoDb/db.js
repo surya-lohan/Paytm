@@ -27,8 +27,22 @@ const userSchema = new Schema({
         trim: true,
         maxLength: 50
     }
-})
+});
 
+const accountSchema = new Schema({
+    balance: {
+        type: Number,
+        required: true
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
+});
+
+const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
-console.log("Created userSchema");
+
+export { User, Account };
 export default User;

@@ -1,7 +1,7 @@
 import express from 'express';
 import zod from 'zod';
 import jwt from 'jsonwebtoken'
-import User from '../database/mongoDb/db.js';
+import User, { Account } from '../database/mongoDb/db.js';
 import authMiddleware from '../middlewares/user.js';
 const userRouter = express.Router();
 
@@ -16,6 +16,12 @@ const signinBody = zod.object({
     username: zod.email(),
     password: zod.string()
 
+})
+
+const updateBody = zod.object({
+    password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional(),
 })
 
 userRouter.post('/signup', async (req, res) => {
@@ -46,6 +52,11 @@ userRouter.post('/signup', async (req, res) => {
     })
 
     const userId = user._id;
+
+    const account = await Account.create({
+        userId: userId,
+        balance: Math.random() * 10000
+    })
 
     const token = jwt.sign({
         userId
@@ -108,5 +119,67 @@ userRouter.post('/signin', async (req, res) => {
 
 })
 
+userRouter.put('/update', authMiddleware, async (req, res) => {
+
+    const { success } = updateBody.safeParse(req.body);
+
+    if (!success) {
+        return res.status(411).json({
+            message: "Invalid inputs!"
+        })
+    }
+
+    try {
+
+        await User.updateOne({
+            _id: req.userId
+        }, {
+            password: req.body.password,
+            firstName: req.body.firstName,
+            lastName: req.body.firstName
+        })
+
+        return res.status(200).json({
+            message: "User updated succesfully",
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Can't update user",
+            error: error
+        })
+    }
+
+})
+
+userRouter.get('/bulk', async (req, res) => {
+
+    const filter = req.query.filter || "";
+
+    try {
+        const users = await User.find({
+            $or: [{
+                firstName: filter
+            }, {
+                lastName: filter
+            }]
+        })
+
+
+        return res.status(200).json({
+            user: users.map((user) => ({
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName
+            }))
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Can't find the user"
+        })
+    }
+
+})
 
 export default userRouter;
