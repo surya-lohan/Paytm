@@ -34,7 +34,7 @@ const Signin = () => {
             <div className='bg-white p-6 rounded-2xl max-w-sm w-full mx-4'>
                 <div className="p-2 flex flex-col items-center justify-center gap-1">
                     <h1 className="font-bold text-xl">Signin unsuccesful</h1>
-                    <h3 className="text-gray-500 text-sm text-center break-words w-full">{resData?.message || "We're having trouble signing you in!"}</h3>
+                    <h3 className="text-gray-500 text-sm text-center wrap-break-word w-full">{resData?.message || "We're having trouble signing you in!"}</h3>
                     <button onClick={() => {
                         setLoading(false);
                         window.location.reload();
