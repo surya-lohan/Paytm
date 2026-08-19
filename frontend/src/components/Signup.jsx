@@ -9,17 +9,20 @@ const Signup = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
-    const data = {
-        username: "",
-        firstName: "",
-        lastName: "",
-        password: ""
-    }
+    const [username, setUsername] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const response = await axios.post("http://localhost:3000/api/v1/user/signup", data)
+            const response = await axios.post("http://localhost:3000/api/v1/user/signup", {
+                username,
+                firstName,
+                lastName,
+                password
+            });
             setResData(response.data);
             localStorage.setItem("token", response.data.token);
             navigate("/dashboard");
@@ -54,19 +57,19 @@ const Signup = () => {
                 <div>
                     <div className="p-2 m-2">
                         <h3 className="font-semibold">First name</h3>
-                        <input onChange={(e) => data.firstName = e.target.value} required className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="text" name="firstname" placeholder="John" />
+                        <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="text" name="firstname" placeholder="John" />
                     </div>
                     <div className="p-2 m-2">
                         <h3 className="font-semibold" >Last name</h3>
-                        <input onChange={(e) => data.lastName = e.target.value} className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="text" name="lastname" placeholder="Doe" />
+                        <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="text" name="lastname" placeholder="Doe" />
                     </div>
                     <div className="p-2 m-2">
                         <h3 className="font-semibold">Email</h3>
-                        <input onChange={(e) => data.username = e.target.value} required className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="email" name="username" id="" placeholder="jhondoe@example.com" />
+                        <input value={username} onChange={(e) => setUsername(e.target.value)} required className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="email" name="username" id="" placeholder="jhondoe@example.com" />
                     </div>
                     <div className="p-2 m-2">
                         <h3 className="font-semibold">Password</h3>
-                        <input onChange={(e) => data.password = e.target.value} className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="password" name="password" id="" />
+                        <input value={password} onChange={(e) => setPassword(e.target.value)} className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="password" name="password" id="" />
                     </div>
                 </div>
                 <div className="p-2 m-2 flex flex-col items-center justify-center gap-4">

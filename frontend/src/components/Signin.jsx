@@ -6,19 +6,21 @@ const Signin = () => {
 
     const [resError, setResError] = useState(false);
     const [resData, setResData] = useState({});
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const data = {
-        username: "",
-        password: ""
-    }
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const response = await axios.post("http://localhost:3000/api/v1/user/signin", data);
+            const response = await axios.post("http://localhost:3000/api/v1/user/signin", {
+                username,
+                password
+            });
             setResData(response.data);
+            localStorage.removeItem("token");
             localStorage.setItem("token", response.data.token);
             navigate('/dashboard');
         } catch (error) {
@@ -52,11 +54,11 @@ const Signin = () => {
                 <div className="">
                     <div className="p-2 m-2">
                         <h3 className="font-semibold">Email</h3>
-                        <input onChange={(e) => data.username = e.target.value} required className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="text" name="username" placeholder="John" />
+                        <input value={username} onChange={(e) => setUsername(e.target.value)} required className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="text" name="username" placeholder="John" />
                     </div>
                     <div className="p-2 m-2">
                         <h3 className="font-semibold" >Password</h3>
-                        <input onChange={(e) => data.password = e.target.value} className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="password" name="password" />
+                        <input value={password} onChange={(e) => setPassword(e.target.value)} className="border border-gray-300 rounded-md px-2 py-1 my-2 w-full" type="password" name="password" />
                     </div>
                     <div className="p-2 m-2 flex flex-col items-center justify-center gap-4">
                         <button
@@ -82,7 +84,6 @@ const Signin = () => {
             </div>
         </div>
     )
-
-
 };
+
 export default Signin;

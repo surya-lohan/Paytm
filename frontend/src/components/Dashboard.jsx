@@ -1,7 +1,13 @@
+import Appbar from "./Appbar";
+import Balance from "./Balance";
+import Users from "./Users";
+
 const Dashboard = () => {
     return (
         <div>
-            <h1>Dashboard</h1>
+            <Appbar />
+            <Balance />
+            <Users />
         </div>
     );
 };

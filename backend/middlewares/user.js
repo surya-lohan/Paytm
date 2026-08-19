@@ -7,7 +7,7 @@ const authMiddleware = (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(403).json({
-            message: "Something went wrong! Please try again after sometime."
+            message: "Can't find token"
         })
     }
 

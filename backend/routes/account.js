@@ -18,20 +18,27 @@ accountRouter.get('/balance', authMiddleware, async (req, res) => {
 
         const account = await Account.findOne({
             userId: req.userId
-        })
+        });
+
+        if (!account) {
+            return res.status(404).json({
+                message: "Account not found for this user"
+            });
+        }
 
         return res.status(200).json({
-            message: "Balance fetched succesfully",
+            message: "Balance fetched successfully",
             balance: account.balance
-        })
+        });
 
     } catch (error) {
         res.status(500).json({
-            message: "Can't fetch balance"
-        })
+            message: "Can't fetch balance",
+            error: error.message
+        });
     }
 
-})
+});
 
 accountRouter.post('/transfer', authMiddleware, async (req, res) => {
 
