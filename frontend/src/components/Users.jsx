@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -10,7 +11,7 @@ const Users = () => {
     useEffect(() => {
         axios.get(`http://localhost:3000/api/v1/user/bulk?filter=${debouncedQuery}`,)
             .then(response => {
-                setUsers(response.data.user || []);
+                setUsers(response.data.user);
             })
             .catch(error => {
                 console.log(error);
@@ -23,14 +24,16 @@ const Users = () => {
             <div className="flex flex-col gap-6 p-3">
                 <input value={query} onChange={(e) => setQuery(e.target.value)} className="border p-2 border-gray-400 rounded-md w-96" type="text" placeholder="Search users..." />
                 {users?.map((user, index) => (
-                    <User key={user._id || index} firstName={user.firstName} lastName={user.lastName} />
+                    <User key={user._id || index} firstName={user.firstName} lastName={user.lastName} userId={user.userId} />
                 ))}
             </div>
         </div>
     );
 };
 
-const User = ({ firstName, lastName }) => {
+const User = ({ firstName, lastName, userId }) => {
+    const navigate = useNavigate();
+
     return (
         <>
             <div className="w-1/2 flex items-center justify-between">
@@ -38,7 +41,12 @@ const User = ({ firstName, lastName }) => {
                     <span className="bg-gray-300 rounded-full flex items-center justify-center w-10 h-10">U</span>
                     <h2 className="text-md ">{firstName} {lastName}</h2>
                 </div>
-                <button className="bg-black text-white px-6 text-sm  flex items-center justify-center w-fit py-2 rounded-md hover:cursor-pointer">Send money</button>
+                <button onClick={() => navigate('/send', {
+                    state: {
+                        userId: userId,
+                        userName: firstName
+                    }
+                })} className="bg-black text-white px-6 text-sm  flex items-center justify-center w-fit py-2 rounded-md hover:cursor-pointer">Send money</button>
             </div>
         </>
     )
